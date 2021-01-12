@@ -1,0 +1,131 @@
+unit U_Matriz;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    btn_consultar: TButton;
+    edt_endereco: TEdit;
+    ListBox1: TListBox;
+    edt_idade: TEdit;
+    edt_peso: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    procedure btn_consultarClick(Sender: TObject);
+    function setarArq(z: string): String;
+    procedure tratamento(a: string);
+    procedure ListBox1Click(Sender: TObject);
+    function defTamMatriz(a : integer):integer;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  var
+    mtRapaziada: array of array [0 .. 2] of String;
+    y, x: integer;
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.btn_consultarClick(Sender: TObject);
+var
+  alunos: string;
+  contador, qtdRegistro: integer;
+begin
+  contador := 0;
+  setarArq(edt_endereco.text);
+  qtdRegistro := length(mtRapaziada[y]);
+  ListBox1.Items.Clear;
+  while contador < (qtdRegistro - 1) do
+  begin
+    alunos := mtRapaziada[y][0];
+    ListBox1.Items.Add(alunos);
+    contador := contador + 1;
+  end;
+
+end;
+
+function TForm1.defTamMatriz(a: integer): integer;
+begin
+  for y := 0 to a do
+  begin
+    setLength(mtRapaziada[y], a)
+  end;
+end;
+
+procedure TForm1.ListBox1Click(Sender: TObject);
+var
+peso, idade : String;
+begin
+  peso := mtRapaziada[y][2];
+  idade := mtRapaziada[y][1];
+  edt_peso.text :=  peso;
+  edt_idade.text := idade;
+end;
+
+function TForm1.setarArq(z: string): String;
+var
+  arq: textfile;
+  leitura: String;
+  i : integer;
+begin
+  AssignFile(arq, z);
+  reset(arq);
+  i := 0;
+  while not EoF(arq) do
+  begin
+    readln(arq, leitura);
+    i := 1 + 1;
+    tratamento(leitura);
+    defTamMatriz(i);
+  end;
+  closefile(arq);
+end;
+
+procedure TForm1.tratamento(a: string);
+var
+  qtdP: integer;
+  charac: char;
+  auxiliar: string;
+begin
+  qtdP := 0;
+  for charac in a do
+  begin
+    if charac = '|' then
+    begin
+      qtdP := qtdP + 1;
+      for x := 0 to 2 do
+      begin
+        if qtdP = 1 then
+        begin
+          mtRapaziada[y][0] := auxiliar;
+        end;
+        if qtdP = 2 then
+        begin
+          mtRapaziada[y][1] := auxiliar;
+        end;
+        if qtdP = 3 then
+        begin
+          mtRapaziada[y][2] := auxiliar;
+        end;
+      end;
+      auxiliar := '';
+    end
+    else
+    begin
+      auxiliar := auxiliar + charac;
+    end;
+  end;
+end;
+
+end.

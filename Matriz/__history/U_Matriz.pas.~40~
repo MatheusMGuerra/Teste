@@ -1,0 +1,82 @@
+unit U_Matriz;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    btn_consultar: TButton;
+    edt_endereco: TEdit;
+    ListBox1: TListBox;
+    edt_idade: TEdit;
+    edt_peso: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    procedure btn_consultarClick(Sender: TObject);
+    function setarArq(z: string): String;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  var
+    mtRapaziada: array of array [0 .. 3] of String;
+    x, y: integer;
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.btn_consultarClick(Sender: TObject);
+var
+alunos : string;
+contador, qtdRegistro : integer;
+begin
+  contador := 0;
+  qtdRegistro := length(mtRapaziada[y]);
+  setarArq(edt_endereco.text);
+  while contador < (qtdRegistro - 1) do
+  begin
+    alunos := mtRapaziada[y][x];
+    listbox1.Items.Add(alunos);
+    contador := contador + 1;
+  end;
+
+
+end;
+
+
+function TForm1.setarArq(z: string): String;
+var
+  arq: textfile;
+  leitura: String;
+  qtdLinhas, x, y : integer;
+begin
+  AssignFile(arq, z);
+  reset(arq);
+  qtdLinhas := 0;
+  while not EoF(arq) do
+  begin
+    readln(arq,leitura);
+    qtdLinhas := qtdLinhas + 1;
+    setLength(mtRapaziada, qtdLinhas);
+    for y := 0 to Length(mtRapaziada) - 1 do
+    begin
+      for x := 0 to 3 do
+      begin
+        mtRapaziada[y][x] := leitura;
+      end;
+    end;
+  end;
+
+  closefile(arq);
+end;
+
+end.
